@@ -1,45 +1,136 @@
+:root {
+  --accent: #ff6f61;
+  --accent-hover: #e14c4c;
+  --bg-light: linear-gradient(to right, #fceabb, #f8b500);
+  --bg-dark: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  --text-light: #222;
+  --text-dark: #f2f2f2;
+  --card-light: #ffffffcc;
+  --card-dark: #1f1f1fcc;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #74ebd5, #acb6e5);
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--bg-light);
+  color: var(--text-light);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 40px;
+  transition: background 0.4s ease-in-out, color 0.3s;
+}
+
+body.dark-mode {
+  background: var(--bg-dark);
+  color: var(--text-dark);
 }
 
 .container {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    width: 300px;
+  background: var(--card-light);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  transition: background 0.4s ease;
 }
 
-select, button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 1rem;
-    border-radius: 6px;
-    border: none;
-    font-size: 1rem;
+body.dark-mode .container {
+  background: var(--card-dark);
+}
+
+h1 {
+  color: var(--accent);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+select, button, input, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 1rem;
+  border-radius: 10px;
+  border: none;
+  font-size: 1rem;
+  outline: none;
+}
+
+select {
+  background-color: #f7f7f7;
+  cursor: pointer;
 }
 
 button {
-    background-color: #007BFF;
-    color: white;
-    cursor: pointer;
-    transition: background 0.3s;
+  background-color: var(--accent);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #0056b3;
+  background-color: var(--accent-hover);
+}
+
+#theme-toggle {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background-color: #444;
+  color: white;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  padding: 8px 14px;
 }
 
 #output {
-    margin-top: 1.5rem;
-    font-size: 1.2rem;
-    color: #333;
+  margin-top: 1.5rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+  background-color: #fffc;
+  border-radius: 10px;
+  padding: 15px;
+  transition: background 0.4s;
 }
+
+body.dark-mode #output {
+  background-color: #333c;
+}
+
+#history {
+  margin-top: 2rem;
+  text-align: left;
+  font-size: 0.95rem;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+#history ul {
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+#feedback-form {
+  margin-top: 2rem;
+  text-align: left;
+}
+
+#feedback-response {
+  font-size: 0.9rem;
+  margin-top: 10px;
+  color: #008000;
+}
+
+textarea {
+  resize: vertical;
+}
+
