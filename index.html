@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Daily Motivation Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Daily Motivation Generator</h1>
+        <label for="mood">How are you feeling today?</label>
+        <select id="mood">
+            <option value="anxious">Anxious</option>
+            <option value="sad">Sad</option>
+            <option value="tired">Tired</option>
+            <option value="unmotivated">Unmotivated</option>
+            <option value="needs focus">Needs Focus</option>
+            <option value="seeking creativity">Seeking Creativity</option>
+        </select>
+        <button onclick="getMotivation()">Get Motivation</button>
+        <div id="output"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
