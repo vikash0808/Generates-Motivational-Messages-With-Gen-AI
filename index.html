@@ -1,26 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Daily Motivation Generator</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8" />
+  <title>Daily Motivation Generator</title>
+  <style>
+    :root {
+      --accent: #ff6f61;
+      --accent-hover: #e14c4c;
+      --bg-light: linear-gradient(to right, #fceabb, #f8b500);
+      --bg-dark: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      --text-light: #222;
+      --text-dark: #f2f2f2;
+      --card-light: #ffffffcc;
+      --card-dark: #1f1f1fcc;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 40px;
+      transition: background 0.4s ease-in-out, color 0.3s;
+    }
+
+    body.dark-mode {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .container {
+      background: var(--card-light);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      transition: background 0.4s ease;
+    }
+
+    body.dark-mode .container {
+      background: var(--card-dark);
+    }
+
+    h1 {
+      color: var(--accent);
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    select, button, input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 1rem;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    select {
+      background-color: #f7f7f7;
+      cursor: pointer;
+    }
+
+    button {
+      background-color: var(--accent);
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--accent-hover);
+    }
+
+    #theme-toggle {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background-color: #444;
+      color: white;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      padding: 8px 14px;
+    }
+
+    #output {
+      margin-top: 1.5rem;
+      font-size: 1.3rem;
+      font-weight: 500;
+      background-color: #fffc;
+      border-radius: 10px;
+      padding: 15px;
+      transition: background 0.4s;
+    }
+
+    body.dark-mode #output {
+      background-color: #333c;
+    }
+
+    #history {
+      margin-top: 2rem;
+      text-align: left;
+      font-size: 0.95rem;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    #history ul {
+      padding-left: 20px;
+      list-style-type: disc;
+    }
+
+    #feedback-form {
+      margin-top: 2rem;
+      text-align: left;
+    }
+
+    #feedback-response {
+      font-size: 0.9rem;
+      margin-top: 10px;
+      color: #008000;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Daily Motivation Generator</h1>
-        <label for="mood">How are you feeling today?</label>
-        <select id="mood">
-            <option value="anxious">Anxious</option>
-            <option value="sad">Sad</option>
-            <option value="tired">Tired</option>
-            <option value="unmotivated">Unmotivated</option>
-            <option value="needs focus">Needs Focus</option>
-            <option value="seeking creativity">Seeking Creativity</option>
-        </select>
-        <button onclick="getMotivation()">Get Motivation</button>
-        <div id="output"></div>
+  <button id="theme-toggle" onclick="toggleTheme()">🌙 Dark Mode</button>
+  <div class="container">
+    <h1>💡 Daily Motivation Generator</h1>
+    <label for="mood">How are you feeling today?</label>
+    <select id="mood">
+      <option value="anxious">😟 Anxious</option>
+      <option value="sad">😢 Sad</option>
+      <option value="tired">😴 Tired</option>
+      <option value="unmotivated">😞 Unmotivated</option>
+      <option value="needs focus">🎯 Needs Focus</option>
+      <option value="seeking creativity">🎨 Seeking Creativity</option>
+    </select>
+    <button onclick="getMotivation()">✨ Get Motivation</button>
+    <div id="output"></div>
+
+    <div id="history">
+      <h3>🕘 Previous Messages</h3>
+      <ul id="history-list"></ul>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <div id="feedback-form">
+      <h3>📬 Feedback</h3>
+      <form onsubmit="submitFeedback(event)">
+        <input type="text" id="name" placeholder="Your Name" required />
+        <textarea id="feedback" rows="3" placeholder="Your feedback..." required></textarea>
+        <button type="submit">Submit Feedback</button>
+      </form>
+      <p id="feedback-response"></p>
+    </div>
+  </div>
+
+  <script>
+    const outputDiv = document.getElementById('output');
+    const historyList = document.getElementById('history-list');
+
+    const motivationQuotes = {
+      anxious: [
+        "Breathe. You’re stronger than you think.",
+        "Anxiety doesn’t define you. Your courage does.",
+        "Let go of what you can't control.",
+        "One step at a time is all it takes.",
+        "You’ve survived 100% of your worst days."
+      ],
+      sad: [
+        "It’s okay to not be okay.",
+        "Feel it, heal it, let it go.",
+        "Your story isn’t over yet.",
+        "After rain comes sunshine.",
+        "Tears are proof you’re healing."
+      ],
+      tired: [
+        "Rest is productive too.",
+        "Even the strongest need a break.",
+        "Small progress is still progress.",
+        "You’re doing enough. Just breathe.",
+        "Take a break. You’ve earned it."
+      ],
+      unmotivated: [
+        "Discipline beats motivation.",
+        "Action creates momentum. Start now.",
+        "Consistency > Perfection.",
+        "Start where you are. Use what you have.",
+        "Motivation comes from motion."
+      ],
+      "needs focus": [
+        "Eliminate distractions. Focus.",
+        "Your future self will thank you.",
+        "One task at a time.",
+        "Progress, not perfection.",
+        "You’ve got this!"
+      ],
+      "seeking creativity": [
+        "Create freely. Perfection is the enemy.",
+        "Inspiration comes from action.",
+        "Your ideas matter. Express them.",
+        "Messy beginnings lead to brilliance.",
+        "Let curiosity guide you."
+      ]
+    };
+
+    function getMotivation() {
+      const mood = document.getElementById('mood').value;
+      const quotes = motivationQuotes[mood];
+      if (quotes && quotes.length > 0) {
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        const quote = quotes[randomIndex];
+        outputDiv.textContent = `"${quote}"`;
+        addToHistory(quote);
+      } else {
+        outputDiv.textContent = "No quotes available for this mood.";
+      }
+    }
+
+    function addToHistory(message) {
+      const li = document.createElement('li');
+      li.textContent = message;
+      historyList.prepend(li);
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    function submitFeedback(event) {
+      event.preventDefault();
+      const name = document.getElementById('name').value;
+      const feedback = document.getElementById('feedback').value;
+      document.getElementById('feedback-response').textContent = `Thanks for your feedback, ${name}!`;
+      document.getElementById('name').value = '';
+      document.getElementById('feedback').value = '';
+    }
+  </script>
 </body>
 </html>
+
