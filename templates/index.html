@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Motivation Generator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <button id="theme-toggle" type="button" aria-label="Toggle color theme">🌙 Dark Mode</button>
+
+  <main class="container">
+    <h1>💡 Daily Motivation Generator</h1>
+    <p class="subtitle">AI-powered encouragement tailored to how you feel right now.</p>
+
+    <label for="mood">How are you feeling today?</label>
+    <select id="mood">
+      <option value="anxious">😟 Anxious</option>
+      <option value="sad">😢 Sad</option>
+      <option value="tired">😴 Tired</option>
+      <option value="unmotivated">😞 Unmotivated</option>
+      <option value="needs focus">🎯 Needs Focus</option>
+      <option value="seeking creativity">🎨 Seeking Creativity</option>
+    </select>
+
+    <button id="generate-btn" type="button">✨ Get Motivation</button>
+
+    <section id="output-card" class="output-card hidden" aria-live="polite">
+      <div id="output" class="output-text"></div>
+      <span id="source-badge" class="source-badge"></span>
+    </section>
+
+    <section id="history">
+      <div class="section-header">
+        <h3>🕘 Previous Messages</h3>
+        <button id="clear-history-btn" type="button" class="secondary-btn">Clear</button>
+      </div>
+      <ul id="history-list"></ul>
+    </section>
+
+    <section id="feedback-form">
+      <h3>📬 Feedback</h3>
+      <form id="feedback-el">
+        <input type="text" id="name" placeholder="Your Name" maxlength="50" required />
+        <textarea id="feedback" rows="3" placeholder="Your feedback..." maxlength="500" required></textarea>
+        <button type="submit">Submit Feedback</button>
+      </form>
+      <p id="feedback-response" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
